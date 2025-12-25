@@ -168,3 +168,47 @@
   border-color: rgba(31, 122, 95, 0.25);
   color: var(--color-primary);
 }
+
+/* Loading spinner */
+.spinnerWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-muted);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 3px solid rgba(31, 122, 95, 0.18);
+  border-top-color: rgba(31, 122, 95, 0.9);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinnerText {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* Alert */
+.alert {
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+
+.alertTitle {
+  font-weight: 900;
+  color: #b91c1c;
+  margin-bottom: 6px;
+}
+
+.alertMsg {
+  color: var(--color-text);
+}

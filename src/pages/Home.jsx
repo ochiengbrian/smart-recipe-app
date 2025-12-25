@@ -2,10 +2,43 @@ import { Link } from "react-router-dom";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import RecipeCard from "../components/RecipeCard";
-import { mockRecipes } from "../data/mockRecipes";
+import { useEffect, useState } from "react";
+import Spinner from "../components/ui/Spinner";
+import Alert from "../components/ui/Alert";
+import { searchRecipes } from "../services/recipeService";
+
 
 export default function Home() {
-  const featured = mockRecipes.slice(0, 6);
+  const [featured, setFeatured] = useState([]);
+const [loadingFeatured, setLoadingFeatured] = useState(false);
+const [errFeatured, setErrFeatured] = useState("");
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function run() {
+    setErrFeatured("");
+    setLoadingFeatured(true);
+
+    try {
+      const results = await searchRecipes(
+        { query: "", sort: "popularity", number: 6 },
+        controller.signal
+      );
+      setFeatured(results);
+    } catch (e) {
+      if (e?.name === "AbortError") return;
+      if (String(e?.message || "").toLowerCase().includes("aborted")) return;
+      setErrFeatured(e.message || "Failed to load featured recipes.");
+    } finally {
+      setLoadingFeatured(false);
+    }
+  }
+
+  run();
+  return () => controller.abort();
+}, []);
+
 
   return (
     <div className="stack">
@@ -87,11 +120,17 @@ export default function Home() {
           <p className="sectionHint">A few picks to get you started.</p>
         </div>
 
-        <div className="grid">
-          {featured.map((r) => (
-            <RecipeCard key={r.id} recipe={r} />
-          ))}
-        </div>
+        {loadingFeatured ? <Spinner label="Loading featured recipes..." /> : null}
+{errFeatured ? <Alert message={errFeatured} /> : null}
+
+{!loadingFeatured && !errFeatured ? (
+  <div className="grid">
+    {featured.map((r) => (
+      <RecipeCard key={r.id} recipe={r} />
+    ))}
+  </div>
+) : null}
+
       </section>
     </div>
   );

@@ -3,14 +3,47 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Card from "../components/ui/Card";
 import RecipeCard from "../components/RecipeCard";
-import { mockRecipes } from "../data/mockRecipes";
+import { useEffect } from "react";
+import Spinner from "../components/ui/Spinner";
+import Alert from "../components/ui/Alert";
+import { searchRecipes } from "../services/recipeService";
+
 import { useState } from "react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
-  const recommended = mockRecipes.slice(1, 6);
+  const [recommended, setRecommended] = useState([]);
+const [loadingRecs, setLoadingRecs] = useState(false);
+const [errRecs, setErrRecs] = useState("");
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function run() {
+    setErrRecs("");
+    setLoadingRecs(true);
+
+    try {
+      const results = await searchRecipes(
+        { query: "quick", number: 6 },
+        controller.signal
+      );
+      setRecommended(results);
+    } catch (e) {
+      if (e?.name === "AbortError") return;
+      if (String(e?.message || "").toLowerCase().includes("aborted")) return;
+      setErrRecs(e.message || "Failed to load recommendations.");
+    } finally {
+      setLoadingRecs(false);
+    }
+  }
+
+  run();
+  return () => controller.abort();
+}, []);
+
 
   function handleSearch(e) {
     e.preventDefault();
@@ -67,11 +100,17 @@ export default function Dashboard() {
           <p className="sectionHint">Static picks for now (Phase 7 adds API personalization).</p>
         </div>
 
-        <div className="grid">
-          {recommended.map((r) => (
-            <RecipeCard key={r.id} recipe={r} />
-          ))}
-        </div>
+        {loadingRecs ? <Spinner label="Loading recommendations..." /> : null}
+{errRecs ? <Alert message={errRecs} /> : null}
+
+{!loadingRecs && !errRecs ? (
+  <div className="grid">
+    {recommended.map((r) => (
+      <RecipeCard key={r.id} recipe={r} />
+    ))}
+  </div>
+) : null}
+
       </section>
     </div>
   );
