@@ -8,6 +8,8 @@ import Spinner from "../components/ui/Spinner";
 import Alert from "../components/ui/Alert";
 import { useDebounce } from "../services/useDebounce";
 import { searchRecipes } from "../services/recipeService";
+import { usePreferences } from "../context/PreferencesContext";
+
 
 
 function normalize(s) {
@@ -29,6 +31,8 @@ export default function Search() {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const debouncedQ = useDebounce(q, 300);
+  const { prefs } = usePreferences();
+
 
   const [sort, setSort] = useState("relevance");
   const [visibleCount, setVisibleCount] = useState(9);
@@ -45,14 +49,36 @@ export default function Search() {
       setLoading(true);
 
       try {
-        const results = await searchRecipes(
+        const dietParam =
+  prefs.diets.vegan ? "vegan" :
+  prefs.diets.vegetarian ? "vegetarian" :
+  prefs.diets.glutenFree ? "gluten free" :
+  prefs.diets.dairyFree ? "dairy free" :
+  undefined;
+
+const maxTimeParam = prefs.maxTime !== "Any" ? Number(prefs.maxTime) : undefined;
+
+const results = await searchRecipes(
   {
     query: debouncedQ || "",
     number: 18,
     sort: debouncedQ ? undefined : "popularity",
+    cuisine: prefs.cuisine !== "Any" ? prefs.cuisine : undefined,
+    diet: dietParam,
   },
   controller.signal
 );
+
+// If maxTime is set, filter client-side (simple + effective)
+const filteredByTime = maxTimeParam
+  ? results.filter((r) => {
+      const mins = parseInt(r.time, 10);
+      return Number.isFinite(mins) ? mins <= maxTimeParam : true;
+    })
+  : results;
+
+setItems(filteredByTime);
+
 
         setItems(results);
       } catch (e) {

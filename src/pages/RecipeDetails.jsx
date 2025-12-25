@@ -6,6 +6,8 @@ import Spinner from "../components/ui/Spinner";
 import Alert from "../components/ui/Alert";
 import Badge from "../components/ui/Badge";
 import { extractSteps, getRecipeDetails } from "../services/recipeService";
+import { useFavorites } from "../context/FavoritesContext";
+
 
 function stripHtml(html) {
   return (html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -17,6 +19,8 @@ export default function RecipeDetails() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [checked, setChecked] = useState({}); // ingredientId -> true
+  const { isFavorite, toggleFavorite } = useFavorites();
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -73,14 +77,32 @@ export default function RecipeDetails() {
               </div>
 
               <div className="heroActions">
-                <Link to={`/recipes/${id}/cook`}>
-                  <Button variant="primary" size="lg">Start Cooking</Button>
-                </Link>
+  <Link to={`/recipes/${id}/cook`}>
+    <Button variant="primary" size="lg">Start Cooking</Button>
+  </Link>
 
-                <Link to="/search">
-                  <Button variant="ghost" size="lg">Back to Search</Button>
-                </Link>
-              </div>
+  <Button
+    variant={isFavorite(id) ? "primary" : "ghost"}
+    size="lg"
+    onClick={() =>
+      toggleFavorite({
+        id,
+        title: data.title,
+        time: data.readyInMinutes ? `${data.readyInMinutes} min` : "—",
+        difficulty: data.readyInMinutes && data.readyInMinutes <= 20 ? "Easy" : "Medium",
+        tags: (data.diets || []).slice(0, 2),
+        image: data.image,
+      })
+    }
+  >
+    {isFavorite(id) ? "Saved ✓" : "Save"}
+  </Button>
+
+  <Link to="/search">
+    <Button variant="ghost" size="lg">Back to Search</Button>
+  </Link>
+</div>
+
 
               {data.summary ? (
                 <p className="muted" style={{ marginTop: "14px" }}>
