@@ -1,0 +1,126 @@
+/* =========================
+   APP LAYOUT
+   ========================= */
+.appShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  flex: 1;
+}
+
+.page {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+.page h1 {
+  margin-bottom: 10px;
+  font-size: 28px;
+}
+
+.page p {
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   NAVBAR
+   ========================= */
+.nav {
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 10;
+}
+
+.nav__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__brand {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+}
+
+.nav__links {
+  display: flex;
+  gap: 14px;
+}
+
+.nav__link {
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.nav__link:hover {
+  background: rgba(31, 122, 95, 0.08);
+  color: var(--color-text-primary);
+}
+
+/* NavLink adds "active" class automatically */
+.nav__link.active {
+  background: rgba(31, 122, 95, 0.14);
+  color: var(--color-primary);
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+.footer {
+  border-top: 1px solid var(--color-border);
+  background: #fff;
+}
+
+.footer__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 24px;
+}
+
+.footer__muted {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 720px) {
+  .nav__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nav__links {
+    flex-wrap: wrap;
+  }
+
+  .main {
+    padding: 16px;
+  }
+
+  .page {
+    padding: 18px;
+  }
+}
