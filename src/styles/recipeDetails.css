@@ -1,0 +1,250 @@
+/* =========================
+   RECIPE DETAILS
+   ========================= */
+
+.recipeHero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.heroMedia {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  background: #f3f4f6;
+}
+
+.heroMedia img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+.heroMedia:hover img {
+  transform: scale(1.03);
+}
+
+.heroInfo {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.heroTitle {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--text-3xl);
+  line-height: var(--line-tight);
+}
+
+.heroBadges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: var(--space-3) 0 var(--space-5) 0;
+}
+
+.heroActions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: var(--space-6);
+  align-items: start;
+  margin-top: var(--space-8);
+}
+
+/* Ingredients list */
+.ingList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: var(--space-4);
+}
+
+.ingItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.7);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.ingItem:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 1);
+}
+
+.ingCheck {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+}
+
+.ingText {
+  flex: 1;
+}
+
+.ingTextDone {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+/* Steps */
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.stepItem {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.stepItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stepNum {
+  font-weight: 900;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.stepText {
+  margin: 0;
+  color: var(--color-text);
+}
+
+/* =========================
+   COOKING MODE
+   ========================= */
+
+.cookShell {
+  min-height: 100vh;
+  background: radial-gradient(1000px 500px at 10% 0%, rgba(244, 162, 97, 0.12), transparent 60%),
+              radial-gradient(900px 700px at 90% 10%, rgba(31, 122, 95, 0.10), transparent 60%),
+              #0b1220;
+  color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.cookTopbar {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  background: rgba(11, 18, 32, 0.72);
+  backdrop-filter: blur(10px);
+  z-index: 20;
+}
+
+.cookTitle {
+  font-size: 14px;
+  color: rgba(249, 250, 251, 0.85);
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cookMain {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 22px 18px 40px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+.cookStepNum {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(249, 250, 251, 0.65);
+  font-weight: 800;
+}
+
+.cookStepText {
+  font-size: 28px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.cookControls {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.cookBtn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f9fafb;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.cookBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.cookBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .recipeHero {
+    grid-template-columns: 1fr;
+  }
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+  .heroMedia img {
+    height: 300px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cookStepText {
+    font-size: 22px;
+  }
+}

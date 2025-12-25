@@ -69,3 +69,24 @@ export async function findByIngredients({ ingredients, number = 12 }, signal) {
 export async function getRecipeDetails(id, signal) {
   return apiGet(`/recipes/${id}/information`, { includeNutrition: false }, signal);
 }
+
+export function extractSteps(recipeDetails) {
+  const analyzed = recipeDetails?.analyzedInstructions;
+  if (Array.isArray(analyzed) && analyzed.length > 0) {
+    const steps = analyzed[0]?.steps || [];
+    return steps
+      .map((s) => (s?.step || "").trim())
+      .filter(Boolean);
+  }
+
+  // Fallback: basic instructions string (often HTML)
+  const raw = recipeDetails?.instructions || "";
+  const text = raw
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Split into sentences as a rough fallback
+  if (!text) return [];
+  return text.split(". ").map((x) => x.trim()).filter(Boolean);
+}

@@ -5,6 +5,7 @@ import "./styles/app.css";
 import "./styles/pages.css";
 import "./styles/ingredients.css";
 import "./styles/search.css";
+import "./styles/recipeDetails.css";
 
 import App from './App';
 

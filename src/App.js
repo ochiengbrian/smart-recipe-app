@@ -7,6 +7,8 @@ import Ingredients from "./pages/Ingredients";
 import Search from "./pages/Search";
 import Results from "./pages/Results";
 import RecipeDetails from "./pages/RecipeDetails";
+import CookingMode from "./pages/CookingMode";
+
 import Favorites from "./pages/Favorites";
 import Settings from "./pages/Settings";
 
@@ -22,6 +24,8 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/results" element={<Results />} />
           <Route path="/recipes/:id" element={<RecipeDetails />} />
+<Route path="/recipes/:id/cook" element={<CookingMode />} />
+
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
