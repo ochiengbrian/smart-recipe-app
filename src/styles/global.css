@@ -1,4 +1,3 @@
-@import "./app.css";
 
 /* =========================
    DESIGN TOKENS (THEME)
@@ -138,3 +137,10 @@ button, input {
   border-radius: 8px;
   background: var(--color-surface);
 }
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
