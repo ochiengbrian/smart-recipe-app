@@ -69,7 +69,7 @@ const results = await searchRecipes(
   controller.signal
 );
 
-// If maxTime is set, filter client-side (simple + effective)
+// If maxTime is set, filter client-side
 const filteredByTime = maxTimeParam
   ? results.filter((r) => {
       const mins = parseInt(r.time, 10);
