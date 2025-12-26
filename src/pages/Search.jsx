@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
@@ -71,13 +71,18 @@ export default function Search() {
   }, []);
 
   // helper: apply preferences client-side
-  function applyPreferences(list) {
+  const applyPreferences = useCallback(
+  (list) => {
     let out = list;
 
     // cuisine (simple client-side filter using tags/title text)
     if (prefs.cuisine && prefs.cuisine !== "Any") {
       const c = normalize(prefs.cuisine);
-      out = out.filter((r) => normalize(r.title).includes(c) || (r.tags || []).some((t) => normalize(t).includes(c)));
+      out = out.filter(
+        (r) =>
+          normalize(r.title).includes(c) ||
+          (r.tags || []).some((t) => normalize(t).includes(c))
+      );
     }
 
     // max time
@@ -90,15 +95,26 @@ export default function Search() {
     }
 
     // diet toggles (best effort using tags)
-    // Note: Spoonacular diets are better applied server-side, but for pool filtering this works reasonably.
     if (prefs.diets.vegan) {
-      out = out.filter((r) => (r.tags || []).some((t) => normalize(t).includes("vegan")));
+      out = out.filter((r) =>
+        (r.tags || []).some((t) => normalize(t).includes("vegan"))
+      );
     } else if (prefs.diets.vegetarian) {
-      out = out.filter((r) => (r.tags || []).some((t) => normalize(t).includes("vegetarian")));
+      out = out.filter((r) =>
+        (r.tags || []).some((t) => normalize(t).includes("vegetarian"))
+      );
     }
 
     return out;
-  }
+  },
+  [
+    prefs.cuisine,
+    prefs.maxTime,
+    prefs.diets.vegan,
+    prefs.diets.vegetarian,
+  ]
+);
+
 
   // 2) Compute results from pool when qActive or prefs changes (NO API call)
   const poolResults = useMemo(() => {
@@ -126,13 +142,7 @@ export default function Search() {
 
     return list;
   }, [
-    pool,
-    qActive,
-    sort,
-    prefs.cuisine,
-    prefs.maxTime,
-    prefs.diets.vegan,
-    prefs.diets.vegetarian,
+    pool, qActive, sort, applyPreferences
   ]);
 
   // when poolResults changes, update displayed items
