@@ -139,7 +139,7 @@ export async function getDailyFeatured(signal) {
       query: "",                // no keyword
       sort: "popularity",
       number: 6,
-      offset,                   // daily variation
+      offset,                   // daily variations
       addRecipeInformation: true,
     },
     ttl,
