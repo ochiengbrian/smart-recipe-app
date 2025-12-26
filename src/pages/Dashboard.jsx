@@ -72,16 +72,12 @@ setRecommended(results);
               Search
             </Button>
           </form>
-
-          <p className="muted" style={{ marginTop: "10px" }}>
-            Phase 6 will connect this to real search results.
-          </p>
         </Card>
 
         <Card
           title="Cook with what you have"
-          subtitle="Tell us your ingredients — we’ll recommend what to make."
-        >
+          subtitle="Tell us your ingredients, we’ll recommend what to make."
+      >
           <div className="stack">
             <Link to="/ingredients">
               <Button variant="ghost" size="lg">Add Ingredients</Button>
@@ -97,21 +93,33 @@ setRecommended(results);
       <section className="section">
         <div className="sectionHeader">
           <h2 className="sectionTitle">Recommended for you</h2>
-          <p className="sectionHint">Static picks for now (Phase 7 adds API personalization).</p>
         </div>
 
         {loadingRecs ? <Spinner label="Loading recommendations..." /> : null}
 {errRecs ? <Alert message={errRecs} /> : null}
 
 {!loadingRecs && !errRecs ? (
-  <div className="grid">
-    {recommended.map((r) => (
-      <RecipeCard key={r.id} recipe={r} />
-    ))}
-  </div>
+  recommended.length > 0 ? (
+    <div className="grid">
+      {recommended.map((r) => (
+        <RecipeCard key={r.id} recipe={r} />
+      ))}
+    </div>
+  ) : (
+    <div className="emptyState" style={{ marginTop: "16px" }}>
+      <h3 style={{ margin: 0 }}>No recommendations yet</h3>
+      <p className="muted" style={{ marginTop: "10px" }}>
+        Try searching, or refresh tomorrow for a new daily set.
+      </p>
+    </div>
+  )
 ) : null}
+
 
       </section>
     </div>
   );
 }
+
+
+

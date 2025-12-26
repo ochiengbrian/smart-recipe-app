@@ -58,7 +58,7 @@ setFeatured(results);
           </div>
 
           <div style={{ marginTop: "16px" }} className="muted">
-            Tip: Try <span className="kbd">/recipes/101</span> to see the detail route working.
+            Tip: Try <span className="kbd">Searching ingredients you have</span> to see the meals you can make from them.
           </div>
         </div>
 
@@ -83,7 +83,7 @@ setFeatured(results);
         <div className="stepIcon">1</div>
         <h3 style={{ margin: 0 }}>Add ingredients</h3>
         <p className="muted" style={{ marginTop: "8px" }}>
-          Tell us what’s in your kitchen — even a few items helps.
+          Tell us what’s in your kitchen, even a few items helps.
         </p>
       </div>
     </div>

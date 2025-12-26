@@ -297,13 +297,10 @@ export default function Search() {
           </div>
         </Card>
 
-        <Card title="How this saves API calls" subtitle="Daily pool + fallback only when needed.">
+        <Card title="One stop for all your cooking needs!">
           <div className="stack">
             <p className="muted" style={{ margin: 0 }}>
-              Most searches run on the daily pool (0 API calls). We only call the API if your search returns no matches.
-            </p>
-            <p className="muted" style={{ margin: 0 }}>
-              Pool refreshes once per day (first app open after midnight).
+              Get daily recommendations from our platform for the current trnding meal of the day.
             </p>
           </div>
         </Card>

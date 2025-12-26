@@ -146,7 +146,9 @@ export async function getDailyFeatured(signal) {
     signal
   );
 
-  return (data.results || []).map(mapToCard);
+  if (Array.isArray(data)) return data;
+return (data?.results || []).map(mapToCard);
+
 }
 
 export async function getDailyRecommended(signal) {
@@ -159,17 +161,27 @@ export async function getDailyRecommended(signal) {
     cacheKey,
     "/recipes/complexSearch",
     {
-      query: "quick",           // a stable theme for dashboard
+      query: "quick",
       number: 6,
-      offset,                   // daily variation
+      offset,
       addRecipeInformation: true,
     },
     ttl,
     signal
   );
 
-  return (data.results || []).map(mapToCard);
+  // If old cache stored an array of cards, use it directly
+  if (Array.isArray(data)) return data;
+
+  // Normal case: Spoonacular object { results: [...] }
+  // If old cache stored an array of cards, use it directly
+if (Array.isArray(data)) return data;
+
+// Normal case
+return (data?.results || []).map(mapToCard);
+
 }
+
 
 export async function getDailySearchPool(signal) {
   const ttl = msUntilNextMidnight();
