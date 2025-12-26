@@ -16,9 +16,14 @@ function useQuery() {
 export default function Results() {
   const query = useQuery();
   const ingRaw = query.get("ing") || "";
-  const ingredients = ingRaw
-    ? decodeURIComponent(ingRaw).split(",").map((x) => x.trim()).filter(Boolean)
-    : [];
+  const ingredients = useMemo(() => {
+  if (!ingRaw) return [];
+  return decodeURIComponent(ingRaw)
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
+}, [ingRaw]);
+
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,7 +53,7 @@ export default function Results() {
 
     run();
     return () => controller.abort();
-  }, [ingRaw, ingredients]); // re-run if query changes
+  }, [ingredients]); // re-run if query changes
 
   return (
     <div className="stack">
