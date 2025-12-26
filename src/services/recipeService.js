@@ -1,4 +1,6 @@
-import { apiGet } from "./apiClient";
+import { apiGet, apiGetCached } from "./apiClient";
+import { getTodayKey, msUntilNextMidnight } from "./dailyCache";
+
 
 function difficultyFromMinutes(mins) {
   if (mins <= 20) return "Easy";
@@ -6,8 +8,17 @@ function difficultyFromMinutes(mins) {
   return "Hard";
 }
 
+function dailyOffset(maxOffset = 120) {
+  // Deterministic "random" offset based on date string
+  const key = getTodayKey(); // YYYY-MM-DD
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) % 100000;
+  return hash % maxOffset;
+}
+
+
 export function mapToCard(r) {
-  const minutes = r.readyInMinutes ?? r.readyInMinutes;
+  const minutes = r.readyInMinutes;
   return {
     id: String(r.id),
     title: r.title,
@@ -18,12 +29,18 @@ export function mapToCard(r) {
   };
 }
 
+
 // Search recipes (text search)
 export async function searchRecipes(
-  { query, number = 12, diet, cuisine, sort }, // sort optional
+  { query, number = 12, diet, cuisine, sort },
   signal
 ) {
-  const data = await apiGet(
+  const ttl = msUntilNextMidnight();
+
+  const cacheKey = `search:${getTodayKey()}|q=${query || ""}|n=${number}|diet=${diet || ""}|cuisine=${cuisine || ""}|sort=${sort || ""}`;
+
+  const data = await apiGetCached(
+    cacheKey,
     "/recipes/complexSearch",
     {
       query: query || undefined,
@@ -31,8 +48,9 @@ export async function searchRecipes(
       addRecipeInformation: true,
       diet,
       cuisine,
-      sort: sort || undefined, // e.g. "popularity"
+      sort: sort || undefined,
     },
+    ttl,
     signal
   );
 
@@ -40,10 +58,16 @@ export async function searchRecipes(
 }
 
 
+
 // Find recipes by ingredients
 export async function findByIngredients({ ingredients, number = 12 }, signal) {
-  // Spoonacular expects comma-separated list
-  const data = await apiGet(
+  const ttl = msUntilNextMidnight();
+
+  const list = ingredients.map((x) => x.trim()).filter(Boolean).join(",").toLowerCase();
+  const cacheKey = `ingredients:${getTodayKey()}|list=${list}|n=${number}`;
+
+  const data = await apiGetCached(
+    cacheKey,
     "/recipes/findByIngredients",
     {
       ingredients: ingredients.join(","),
@@ -51,10 +75,10 @@ export async function findByIngredients({ ingredients, number = 12 }, signal) {
       ranking: 1,
       ignorePantry: true,
     },
+    ttl,
     signal
   );
 
-  // This endpoint returns a simpler object; we map basics:
   return (data || []).map((r) => ({
     id: String(r.id),
     title: r.title,
@@ -65,10 +89,21 @@ export async function findByIngredients({ ingredients, number = 12 }, signal) {
   }));
 }
 
+
 // Recipe details
 export async function getRecipeDetails(id, signal) {
-  return apiGet(`/recipes/${id}/information`, { includeNutrition: false }, signal);
+  const ttl = msUntilNextMidnight();
+  const cacheKey = `recipeDetails:${getTodayKey()}|id=${id}`;
+
+  return apiGetCached(
+    cacheKey,
+    `/recipes/${id}/information`,
+    { includeNutrition: false },
+    ttl,
+    signal
+  );
 }
+
 
 export function extractSteps(recipeDetails) {
   const analyzed = recipeDetails?.analyzedInstructions;
@@ -89,4 +124,72 @@ export function extractSteps(recipeDetails) {
   // Split into sentences as a rough fallback
   if (!text) return [];
   return text.split(". ").map((x) => x.trim()).filter(Boolean);
+}
+
+export async function getDailyFeatured(signal) {
+  const ttl = msUntilNextMidnight();
+  const offset = dailyOffset(120);
+
+  const cacheKey = `dailyFeatured:${getTodayKey()}`;
+
+  const data = await apiGetCached(
+    cacheKey,
+    "/recipes/complexSearch",
+    {
+      query: "",                // no keyword
+      sort: "popularity",
+      number: 6,
+      offset,                   // daily variation
+      addRecipeInformation: true,
+    },
+    ttl,
+    signal
+  );
+
+  return (data.results || []).map(mapToCard);
+}
+
+export async function getDailyRecommended(signal) {
+  const ttl = msUntilNextMidnight();
+  const offset = dailyOffset(120);
+
+  const cacheKey = `dailyRecommended:${getTodayKey()}`;
+
+  const data = await apiGetCached(
+    cacheKey,
+    "/recipes/complexSearch",
+    {
+      query: "quick",           // a stable theme for dashboard
+      number: 6,
+      offset,                   // daily variation
+      addRecipeInformation: true,
+    },
+    ttl,
+    signal
+  );
+
+  return (data.results || []).map(mapToCard);
+}
+
+export async function getDailySearchPool(signal) {
+  const ttl = msUntilNextMidnight();
+  const offset = dailyOffset(180);
+
+  const cacheKey = `dailySearchPool:${getTodayKey()}`;
+
+  const data = await apiGetCached(
+    cacheKey,
+    "/recipes/complexSearch",
+    {
+      query: "", // broad pool
+      sort: "popularity",
+      number: 18, // pool size
+      offset,
+      addRecipeInformation: true,
+    },
+    ttl,
+    signal
+  );
+
+  return (data.results || []).map(mapToCard);
 }

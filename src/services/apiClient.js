@@ -1,3 +1,6 @@
+import { readCache, writeCache } from "./dailyCache";
+
+
 const BASE_URL = "https://api.spoonacular.com";
 
 function getApiKey() {
@@ -30,3 +33,13 @@ export async function apiGet(path, params = {}, signal) {
 
   return res.json();
 }
+
+export async function apiGetCached(cacheKey, path, params = {}, ttlMs, signal) {
+  const hit = readCache(cacheKey);
+  if (hit) return hit;
+
+  const data = await apiGet(path, params, signal);
+  writeCache(cacheKey, data, ttlMs);
+  return data;
+}
+

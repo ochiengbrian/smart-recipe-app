@@ -6,7 +6,8 @@ import RecipeCard from "../components/RecipeCard";
 import { useEffect } from "react";
 import Spinner from "../components/ui/Spinner";
 import Alert from "../components/ui/Alert";
-import { searchRecipes } from "../services/recipeService";
+import { getDailyRecommended } from "../services/recipeService";
+
 
 import { useState } from "react";
 
@@ -26,11 +27,9 @@ useEffect(() => {
     setLoadingRecs(true);
 
     try {
-      const results = await searchRecipes(
-        { query: "quick", number: 6 },
-        controller.signal
-      );
-      setRecommended(results);
+      const results = await getDailyRecommended(controller.signal);
+setRecommended(results);
+
     } catch (e) {
       if (e?.name === "AbortError") return;
       if (String(e?.message || "").toLowerCase().includes("aborted")) return;
@@ -47,8 +46,9 @@ useEffect(() => {
 
   function handleSearch(e) {
     e.preventDefault();
-    // For now we just go to /search (Phase 6 will make this real)
-    navigate("/search");
+    // For now we just go to /search
+    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+
   }
 
   return (

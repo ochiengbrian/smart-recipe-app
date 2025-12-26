@@ -4,7 +4,8 @@ import RecipeCard from "../components/RecipeCard";
 import { useEffect, useState } from "react";
 import Spinner from "../components/ui/Spinner";
 import Alert from "../components/ui/Alert";
-import { searchRecipes } from "../services/recipeService";
+import { getDailyFeatured } from "../services/recipeService";
+
 
 
 export default function Home() {
@@ -20,11 +21,9 @@ useEffect(() => {
     setLoadingFeatured(true);
 
     try {
-      const results = await searchRecipes(
-        { query: "", sort: "popularity", number: 6 },
-        controller.signal
-      );
-      setFeatured(results);
+      const results = await getDailyFeatured(controller.signal);
+setFeatured(results);
+
     } catch (e) {
       if (e?.name === "AbortError") return;
       if (String(e?.message || "").toLowerCase().includes("aborted")) return;
