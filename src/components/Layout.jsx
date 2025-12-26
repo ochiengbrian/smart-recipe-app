@@ -5,8 +5,12 @@ import Footer from "./Footer";
 export default function Layout() {
   return (
     <div className="appShell">
+      <a href="#mainContent" className="skipLink">
+        Skip to content
+      </a>
+
       <Navbar />
-      <main className="main">
+      <main id="mainContent" className="main" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

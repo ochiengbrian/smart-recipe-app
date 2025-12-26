@@ -48,13 +48,18 @@ export default function CookingMode() {
 
   // Keyboard controls: Left/Right arrows
   useEffect(() => {
-    function onKey(e) {
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+  function onKey(e) {
+    if (e.key === "ArrowLeft") {
+      setIndex((i) => Math.max(0, i - 1));
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [total]);
+    if (e.key === "ArrowRight") {
+      setIndex((i) => Math.min(total - 1, i + 1));
+    }
+  }
+  window.addEventListener("keydown", onKey);
+  return () => window.removeEventListener("keydown", onKey);
+}, [total]);
+
 
   return (
     <div className="cookShell">

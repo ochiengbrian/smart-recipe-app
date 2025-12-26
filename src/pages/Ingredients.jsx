@@ -112,15 +112,16 @@ export default function Ingredients() {
                   <div className="autoList" role="listbox" aria-label="Suggestions">
                     {filteredAutocomplete.map((s) => (
                       <div
-                        key={s}
-                        className="autoItem"
-                        role="option"
-                        onMouseDown={(e) => {
-                          // Prevent blur before click
-                          e.preventDefault();
-                          addIngredient(s);
-                        }}
-                      >
+  key={s}
+  className="autoItem"
+  role="option"
+  aria-selected={false}
+  onMouseDown={(e) => {
+    e.preventDefault();
+    addIngredient(s);
+  }}
+>
+
                         <span>{s}</span>
                         <span className="autoMeta">Click to add</span>
                       </div>

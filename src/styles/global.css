@@ -144,3 +144,27 @@ img {
   display: block;
 }
 
+/* Better tap targets + readability */
+button, a, input, select {
+  min-height: 42px;
+}
+
+/* Smooth hover transitions site-wide */
+a, button {
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+/* Focus visible for keyboard users */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 10px;
+}
+
+/* Improve card readability on very small screens */
+@media (max-width: 420px) {
+  .container {
+    padding: 0 var(--space-4);
+  }
+}
+

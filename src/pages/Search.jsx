@@ -12,21 +12,6 @@ import { usePreferences } from "../context/PreferencesContext";
 
 
 
-function normalize(s) {
-  return (s || "").trim().toLowerCase();
-}
-
-function matchesTimeFilter(recipeTime, timeFilter) {
-  // recipeTime looks like "20 min"
-  const num = parseInt(recipeTime, 10);
-  if (Number.isNaN(num)) return true;
-
-  if (timeFilter === "under15") return num <= 15;
-  if (timeFilter === "under30") return num <= 30;
-  if (timeFilter === "under45") return num <= 45;
-  return true;
-}
-
 export default function Search() {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
@@ -42,60 +27,70 @@ export default function Search() {
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    const controller = new AbortController();
+  const controller = new AbortController();
 
-    async function run() {
-      setErr("");
-      setLoading(true);
+  async function run() {
+    setErr("");
+    setLoading(true);
 
-      try {
-        const dietParam =
-  prefs.diets.vegan ? "vegan" :
-  prefs.diets.vegetarian ? "vegetarian" :
-  prefs.diets.glutenFree ? "gluten free" :
-  prefs.diets.dairyFree ? "dairy free" :
-  undefined;
+    try {
+      const dietParam =
+        prefs.diets.vegan
+          ? "vegan"
+          : prefs.diets.vegetarian
+          ? "vegetarian"
+          : prefs.diets.glutenFree
+          ? "gluten free"
+          : prefs.diets.dairyFree
+          ? "dairy free"
+          : undefined;
 
-const maxTimeParam = prefs.maxTime !== "Any" ? Number(prefs.maxTime) : undefined;
+      const maxTimeParam =
+        prefs.maxTime !== "Any" ? Number(prefs.maxTime) : undefined;
 
-const results = await searchRecipes(
-  {
-    query: debouncedQ || "",
-    number: 18,
-    sort: debouncedQ ? undefined : "popularity",
-    cuisine: prefs.cuisine !== "Any" ? prefs.cuisine : undefined,
-    diet: dietParam,
-  },
-  controller.signal
-);
+      const results = await searchRecipes(
+        {
+          query: debouncedQ || "",
+          number: 18,
+          sort: debouncedQ ? undefined : "popularity",
+          cuisine: prefs.cuisine !== "Any" ? prefs.cuisine : undefined,
+          diet: dietParam,
+        },
+        controller.signal
+      );
 
-// If maxTime is set, filter client-side
-const filteredByTime = maxTimeParam
-  ? results.filter((r) => {
-      const mins = parseInt(r.time, 10);
-      return Number.isFinite(mins) ? mins <= maxTimeParam : true;
-    })
-  : results;
+      // If maxTime is set, filter client-side
+      const filteredByTime = maxTimeParam
+        ? results.filter((r) => {
+            const mins = parseInt(r.time, 10);
+            return Number.isFinite(mins) ? mins <= maxTimeParam : true;
+          })
+        : results;
 
-setItems(filteredByTime);
+      setItems(filteredByTime);
+    } catch (e) {
+      // Ignore abort/cancelled requests (common in CI + fast typing)
+      if (e?.name === "AbortError") return;
+      if (String(e?.message || "").toLowerCase().includes("aborted")) return;
 
-
-        setItems(results);
-      } catch (e) {
-  // Ignore "AbortError" (happens when user types quickly or component re-renders)
-  if (e?.name === "AbortError") return;
-  if (String(e?.message || "").toLowerCase().includes("aborted")) return;
-
-  setErr(e.message || "Failed to load recipes.");
-} finally {
-  setLoading(false);
-}
-
+      setErr(e.message || "Failed to load recipes.");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    run();
-    return () => controller.abort();
-  }, [debouncedQ]);
+  run();
+  return () => controller.abort();
+}, [
+  debouncedQ,
+  prefs.cuisine,
+  prefs.maxTime,
+  prefs.diets.vegan,
+  prefs.diets.vegetarian,
+  prefs.diets.glutenFree,
+  prefs.diets.dairyFree,
+]);
+
 
   const sorted = useMemo(() => {
     if (sort === "relevance") return items;

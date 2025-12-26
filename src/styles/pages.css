@@ -283,3 +283,15 @@
 .saveBtnSaved:hover {
   background: rgba(31, 122, 95, 0.92);
 }
+
+@media (max-width: 420px) {
+  .recipeThumb {
+    height: 160px;
+  }
+  .recipeBody {
+    padding: 14px;
+  }
+  .recipeTitle {
+    font-size: 16px;
+  }
+}

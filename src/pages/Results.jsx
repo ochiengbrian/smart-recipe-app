@@ -48,7 +48,7 @@ export default function Results() {
 
     run();
     return () => controller.abort();
-  }, [ingRaw]); // re-run if query changes
+  }, [ingRaw, ingredients]); // re-run if query changes
 
   return (
     <div className="stack">

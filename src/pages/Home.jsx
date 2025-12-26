@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import Button from "../components/ui/Button";
-import Card from "../components/ui/Card";
 import RecipeCard from "../components/RecipeCard";
 import { useEffect, useState } from "react";
 import Spinner from "../components/ui/Spinner";
