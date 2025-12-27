@@ -300,7 +300,7 @@ export default function Search() {
         <Card title="One stop for all your cooking needs!">
           <div className="stack">
             <p className="muted" style={{ margin: 0 }}>
-              Get daily recommendations from our platform for the current trnding meal of the day.
+              Get daily recommendations from our platform for the current trending meal of the day.
             </p>
           </div>
         </Card>
